@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prop Firm Consistency Rule Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+
+        .glass {
+            background: rgba(13, 17, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-light {
+            background: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(48, 54, 61, 0.3);
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1a9957 0%, #20bf6b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(32, 191, 107, 0.3);
+        }
+
+        .result-card {
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(13, 17, 23, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(48, 54, 61, 0.8);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(48, 54, 61, 1);
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .7;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="glass rounded-xl p-6 mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">
+                Consistency Rule Calculator
+            </h1>
+            <p class="text-gray-400 mt-2">Calculate your prop firm consistency rule compliance and trading days projection</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Side: Input Form -->
+            <div class="glass rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-green-400 mb-6">Account Details</h2>
+
+                <form id="calculatorForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Account Size ($)
+                        </label>
+                        <input 
+                            type="number" 
+                            id="accountSize" 
+                            required 
+                            step="0.01" 
+                            placeholder="e.g., 100000"
+                            class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 transition-colors text-lg"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Desired Withdrawal ($)
+                        </label>
+                        <input 
+                            type="number" 
+                            id="desiredWithdrawal" 
+                            required 
+                            step="0.01" 
+                            placeholder="e.g., 5000"
+                            class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 transition-colors text-lg"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Consistency Rule (%)
+                        </label>
+                        <input 
+                            type="number" 
+                            id="consistencyPercent" 
+                            required 
+                            step="1" 
+                            min="1"
+                            max="100"
+                            placeholder="e.g., 30"
+                            class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 transition-colors text-lg"
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Most prop firms use 20-50% consistency rules</p>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full btn-primary text-white py-3 rounded-lg font-semibold text-lg"
+                    >
+                        Calculate
+                    </button>
+                </form>
+
+                <!-- Info Box -->
+                <div class="glass-light rounded-lg p-4 mt-6 border-l-4 border-green-500">
+                    <h3 class="text-sm font-semibold text-green-400 mb-2">💡 How It Works</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        The consistency rule ensures no single trading day accounts for more than a certain percentage of your total profits. 
+                        This calculator helps you determine the minimum number of trading days needed to comply with the rule.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Side: Results & Chart -->
+            <div class="glass rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-green-400 mb-6">Results & Projection</h2>
+
+                <!-- Results Grid -->
+                <div id="resultsSection" class="hidden">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="glass-light rounded-lg p-4 result-card">
+                            <p class="text-xs text-gray-400 mb-1">Max Daily Profit</p>
+                            <p class="text-2xl font-bold text-green-400" id="maxDailyProfit">$0</p>
+                        </div>
+                        <div class="glass-light rounded-lg p-4 result-card">
+                            <p class="text-xs text-gray-400 mb-1">Min Trading Days</p>
+                            <p class="text-2xl font-bold text-green-400" id="minTradingDays">0</p>
+                        </div>
+                        <div class="glass-light rounded-lg p-4 result-card">
+                            <p class="text-xs text-gray-400 mb-1">Avg Daily Target</p>
+                            <p class="text-2xl font-bold text-blue-400" id="avgDailyTarget">$0</p>
+                        </div>
+                        <div class="glass-light rounded-lg p-4 result-card">
+                            <p class="text-xs text-gray-400 mb-1">Remaining Days</p>
+                            <p class="text-2xl font-bold text-blue-400" id="remainingDays">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Pie Chart -->
+                    <div class="glass-light rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-green-300 mb-4 text-center">Trading Days Projection</h3>
+                        <div class="flex justify-center">
+                            <canvas id="projectionChart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown -->
+                    <div class="glass-light rounded-lg p-4 mt-6">
+                        <h3 class="text-sm font-semibold text-green-400 mb-3">📊 Breakdown</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <div class="flex justify-between">
+                                <span>Best Day Profit:</span>
+                                <span class="font-semibold" id="bestDayProfit">$0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Total Profit Target:</span>
+                                <span class="font-semibold" id="totalProfitTarget">$0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Consistency Check:</span>
+                                <span class="font-semibold text-green-400" id="consistencyCheck">✓ Pass</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder -->
+                <div id="placeholder" class="flex flex-col items-center justify-center h-96 text-center">
+                    <div class="text-6xl mb-4 pulse">📊</div>
+                    <p class="text-gray-400 text-lg">Enter your details to calculate</p>
+                    <p class="text-gray-500 text-sm mt-2">Fill the form on the left to see results</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formula Explanation -->
+        <div class="glass rounded-xl p-6 mt-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">📐 Formula Explained</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-300">
+                <div class="glass-light rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Max Daily Profit</h3>
+                    <p class="text-xs mb-2">Maximum profit allowed in a single day</p>
+                    <code class="text-xs text-blue-400">Desired Withdrawal × (Consistency % ÷ 100)</code>
+                </div>
+                <div class="glass-light rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Min Trading Days</h3>
+                    <p class="text-xs mb-2">Minimum days needed to comply</p>
+                    <code class="text-xs text-blue-400">100 ÷ Consistency %</code>
+                </div>
+                <div class="glass-light rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Avg Daily Target</h3>
+                    <p class="text-xs mb-2">Average profit per remaining days</p>
+                    <code class="text-xs text-blue-400">Remaining Profit ÷ Remaining Days</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('calculatorForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const placeholder = document.getElementById('placeholder');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateConsistency();
+        });
+
+        function calculateConsistency() {
+            // Get input values
+            const accountSize = parseFloat(document.getElementById('accountSize').value);
+            const desiredWithdrawal = parseFloat(document.getElementById('desiredWithdrawal').value);
+            const consistencyPercent = parseFloat(document.getElementById('consistencyPercent').value);
+
+            // Validate inputs
+            if (isNaN(accountSize) || isNaN(desiredWithdrawal) || isNaN(consistencyPercent)) {
+                alert('Please enter valid numbers for all fields');
+                return;
+            }
+
+            if (consistencyPercent <= 0 || consistencyPercent > 100) {
+                alert('Consistency percentage must be between 1 and 100');
+                return;
+            }
+
+            if (desiredWithdrawal > accountSize) {
+                alert('Desired withdrawal cannot exceed account size');
+                return;
+            }
+
+            // Calculate consistency rule metrics
+            const maxDailyProfit = desiredWithdrawal * (consistencyPercent / 100);
+            const minTradingDays = Math.ceil(100 / consistencyPercent);
+
+            // Calculate remaining days (after best day)
+            const remainingDays = minTradingDays - 1;
+            const remainingProfit = desiredWithdrawal - maxDailyProfit;
+            const avgDailyTarget = remainingDays > 0 ? remainingProfit / remainingDays : 0;
+
+            // Update results
+            document.getElementById('maxDailyProfit').textContent = '$' + maxDailyProfit.toFixed(2);
+            document.getElementById('minTradingDays').textContent = minTradingDays;
+            document.getElementById('avgDailyTarget').textContent = '$' + avgDailyTarget.toFixed(2);
+            document.getElementById('remainingDays').textContent = remainingDays;
+
+            document.getElementById('bestDayProfit').textContent = '$' + maxDailyProfit.toFixed(2);
+            document.getElementById('totalProfitTarget').textContent = '$' + desiredWithdrawal.toFixed(2);
+
+            // Check consistency
+            const consistencyRatio = (maxDailyProfit / desiredWithdrawal) * 100;
+            const passCheck = consistencyRatio <= consistencyPercent;
+            document.getElementById('consistencyCheck').textContent = passCheck ? '✓ Pass' : '✗ Fail';
+            document.getElementById('consistencyCheck').className = passCheck ? 'font-semibold text-green-400' : 'font-semibold text-red-400';
+
+            // Show results and draw chart
+            placeholder.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+
+            drawPieChart(maxDailyProfit, remainingProfit, remainingDays, accountSize, consistencyPercent);
+        }
+
+        function drawPieChart(bestDayProfit, remainingProfit, remainingDays, accountSize, consistencyPercent) {
+            const canvas = document.getElementById('projectionChart');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const outerRadius = 130;
+            const innerRadius = 80;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Colors for segments
+            const bestDayColor = '#20bf6b';
+            const otherDaysColor = '#3498db';
+            const segmentColors = ['#e74c3c', '#f39c12', '#9b59b6', '#1abc9c', '#34495e', '#16a085', '#e67e22', '#2ecc71'];
+
+            // Calculate angles
+            const totalDays = remainingDays + 1; // +1 for best day
+            const anglePerDay = (2 * Math.PI) / totalDays;
+
+            // Draw outer ring (individual days)
+            let currentAngle = -0.5 * Math.PI; // Start from top
+
+            // Draw best day segment (first segment)
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, outerRadius, currentAngle, currentAngle + anglePerDay);
+            ctx.closePath();
+            ctx.fillStyle = bestDayColor;
+            ctx.fill();
+            ctx.strokeStyle = '#0a0a0a';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            currentAngle += anglePerDay;
+
+            // Draw remaining days segments
+            for (let i = 0; i < remainingDays; i++) {
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, outerRadius, currentAngle, currentAngle + anglePerDay);
+                ctx.closePath();
+                ctx.fillStyle = segmentColors[i % segmentColors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#0a0a0a';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                currentAngle += anglePerDay;
+            }
+
+            // Draw inner circle (center info)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(13, 17, 23, 0.95)';
+            ctx.fill();
+            ctx.strokeStyle = '#30363d';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Draw center text
+            ctx.fillStyle = '#20bf6b';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('$' + (accountSize / 1000).toFixed(0) + 'K', centerX, centerY - 15);
+
+            ctx.fillStyle = '#3498db';
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText(consistencyPercent + '%', centerX, centerY + 15);
+
+            // Draw legend
+            const legendY = centerY + outerRadius + 30;
+
+            // Best day legend
+            ctx.fillStyle = bestDayColor;
+            ctx.fillRect(centerX - 100, legendY, 15, 15);
+            ctx.fillStyle = '#e0e0e0';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Best Day', centerX - 80, legendY + 12);
+
+            // Other days legend
+            ctx.fillStyle = segmentColors[0];
+            ctx.fillRect(centerX + 20, legendY, 15, 15);
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillText('Other Days', centerX + 40, legendY + 12);
+        }
+    </script>
+</body>
+</html>
