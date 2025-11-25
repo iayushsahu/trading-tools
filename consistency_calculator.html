@@ -6,12 +6,6 @@
     <title>Prop Firm Consistency Rule Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
       body {
         background: linear-gradient(
           135deg,
@@ -23,59 +17,19 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
           sans-serif;
       }
-
       .glass {
         background: rgba(13, 17, 23, 0.7);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(48, 54, 61, 0.5);
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       }
-
       .glass-light {
         background: rgba(22, 27, 34, 0.6);
         backdrop-filter: blur(8px);
         border: 1px solid rgba(48, 54, 61, 0.3);
       }
-
-      input[type="number"] {
-        -moz-appearance: textfield;
-      }
-
-      input[type="number"]::-webkit-outer-spin-button,
-      input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      /* Slider styling */
-      input[type="range"] {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 8px;
-        border-radius: 5px;
-        background: rgba(48, 54, 61, 0.5);
-        outline: none;
-      }
-
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #20bf6b;
-        cursor: pointer;
-        box-shadow: 0 0 10px rgba(32, 191, 107, 0.5);
-      }
-
-      input[type="range"]::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #20bf6b;
-        cursor: pointer;
-        border: none;
-        box-shadow: 0 0 10px rgba(32, 191, 107, 0.5);
+      .btn-primary {
+        background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
       }
 
       /* Toggle switch CSS */
@@ -122,7 +76,7 @@
 
       .toggle-slider {
         position: absolute;
-        width: 48%;
+        width: calc(50% - 8px);
         height: 42px;
         background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
         border-radius: 21px;
@@ -132,72 +86,68 @@
       }
 
       .toggle-switch.aggressive .toggle-slider {
-        left: calc(52% - 4px);
+        left: calc(50% + 4px);
         background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
         box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
       }
 
-      .btn-primary {
-        background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
-        transition: all 0.3s ease;
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
       }
-
-      .btn-primary:hover {
-        background: linear-gradient(135deg, #1a9957 0%, #20bf6b 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(32, 191, 107, 0.3);
+      input[type="number"] {
+        -moz-appearance: textfield;
       }
-
-      .result-card {
-        transition: all 0.3s ease;
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: rgba(48, 54, 61, 0.5);
       }
-
-      .result-card:hover {
-        transform: translateY(-2px);
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #20bf6b;
+        cursor: pointer;
       }
-
-      /* Warning banner */
-      .warning-banner {
-        animation: slideIn 0.5s ease-out;
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #20bf6b;
+        border: none;
       }
-
-      @keyframes slideIn {
-        from {
-          transform: translateY(-20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
       ::-webkit-scrollbar {
         width: 8px;
       }
-
-      ::-webkit-scrollbar-track {
-        background: rgba(13, 17, 23, 0.5);
-        border-radius: 4px;
-      }
-
       ::-webkit-scrollbar-thumb {
         background: rgba(48, 54, 61, 0.8);
-        border-radius: 4px;
+      }
+      .custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #20bf6b rgba(48, 54, 61, 0.5);
       }
 
-      .pulse {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      .custom-scroll::-webkit-scrollbar {
+        width: 5px;
       }
 
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.7;
-        }
+      .custom-scroll::-webkit-scrollbar-track {
+        background: rgba(22, 27, 34, 0.6);
+        border-radius: 5px;
+      }
+
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
+        border-radius: 5px;
+      }
+
+      .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #1a9957 0%, #158747 100%);
       }
     </style>
   </head>
@@ -222,71 +172,50 @@
           <h2 class="text-2xl font-bold text-green-400 mb-6">
             Account Details
           </h2>
-
-          <form id="calculatorForm" class="space-y-6">
+          <form
+            id="calculatorForm"
+            class="space-y-6"
+            autocomplete="off"
+            onsubmit="return false;"
+          >
             <!-- Account Size -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">
-                Account Size ($)
-              </label>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Account Size ($)</label
+              >
               <input
                 type="number"
                 id="accountSize"
                 required
-                step="0.01"
-                value="5000"
-                placeholder="e.g., 5000"
-                class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 transition-colors text-lg"
+                step="1"
+                value="10000"
+                class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 text-lg"
               />
             </div>
 
             <!-- Payout Amount -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">
-                Payout Amount ($)
-              </label>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Payout Amount ($)</label
+              >
               <input
                 type="number"
                 id="payoutAmount"
                 required
-                step="0.01"
+                step="1"
                 value="500"
-                placeholder="e.g., 500"
-                class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 transition-colors text-lg"
+                class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 text-lg"
               />
-            </div>
-
-            <!-- Payout Cycle Slider -->
-            <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">
-                Payout Cycle:
-                <span id="payoutCycleValue" class="text-green-400 font-bold"
-                  >15</span
-                >
-                days
-              </label>
-              <input
-                type="range"
-                id="payoutCycle"
-                min="1"
-                max="30"
-                value="15"
-                class="w-full"
-              />
-              <div class="flex justify-between text-xs text-gray-500 mt-1">
-                <span>1 day</span>
-                <span>30 days</span>
-              </div>
             </div>
 
             <!-- Consistency % Slider -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">
-                Consistency Rule:
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Consistency Rule:
                 <span id="consistencyValue" class="text-green-400 font-bold"
                   >35</span
-                >%
-              </label>
+                >%</label
+              >
               <input
                 type="range"
                 id="consistencyPercent"
@@ -296,31 +225,29 @@
                 class="w-full"
               />
               <div class="flex justify-between text-xs text-gray-500 mt-1">
-                <span>15%</span>
-                <span>65%</span>
+                <span>15%</span><span>65%</span>
               </div>
             </div>
 
-            <!-- Min Trading Days Slider -->
+            <!-- Trading Days Slider -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">
-                Trading Days:
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Trading Days:
                 <span id="minDaysValue" class="text-green-400 font-bold"
                   >5</span
                 >
-                days
-              </label>
+                days</label
+              >
               <input
                 type="range"
                 id="minTradingDays"
                 min="1"
-                max="15"
+                max="25"
                 value="5"
                 class="w-full"
               />
               <div class="flex justify-between text-xs text-gray-500 mt-1">
-                <span>1 day</span>
-                <span>15 days</span>
+                <span>1 day</span><span>25 days</span>
               </div>
             </div>
 
@@ -333,15 +260,13 @@
               </label>
               <div class="toggle-container">
                 <div
-                  id="modeToggle"
+                  id="toggleSlider"
                   class="toggle-switch"
                   onclick="toggleMode()"
                 >
                   <div class="toggle-slider"></div>
                   <div class="toggle-labels">
-                    <span class="toggle-label active" id="normalLabel"
-                      >NORMAL</span
-                    >
+                    <span class="toggle-label" id="normalLabel">NORMAL</span>
                     <span class="toggle-label" id="aggressiveLabel"
                       >AGGRESSIVE</span
                     >
@@ -353,24 +278,19 @@
                 <span>Fast Payout</span>
               </div>
             </div>
-
-            <button
-              type="submit"
-              class="w-full btn-primary text-white py-3 rounded-lg font-semibold text-lg"
-            >
-              Calculate
-            </button>
           </form>
         </div>
 
         <!-- Right Side: Results & Chart -->
-        <div class="glass rounded-xl p-6">
+        <div
+          class="glass rounded-xl p-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-scroll"
+        >
           <h2 class="text-2xl font-bold text-green-400 mb-6">
             Results & Projection
           </h2>
 
           <!-- Warning Banner -->
-          <div id="warningBanner" class="hidden warning-banner mb-6">
+          <div id="warningBanner" class="hidden mb-4">
             <div class="glass-light rounded-lg p-4 border-l-4 border-red-500">
               <div class="flex items-start gap-3">
                 <svg
@@ -396,109 +316,10 @@
             </div>
           </div>
 
-          <!-- Results Section -->
-          <div id="resultsSection" class="hidden">
-            <!-- Normal Mode Results -->
-            <div id="normalResults" class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="glass-light rounded-lg p-4 result-card">
-                  <p class="text-xs text-gray-400 mb-1">Trading Days</p>
-                  <p
-                    class="text-2xl font-bold text-green-400"
-                    id="normalTradingDays"
-                  >
-                    0
-                  </p>
-                  <p class="text-xs text-green-300 mt-1" id="normalDaysPercent">
-                    0%
-                  </p>
-                </div>
-                <div class="glass-light rounded-lg p-4 result-card">
-                  <p class="text-xs text-gray-400 mb-1">Daily Target</p>
-                  <p
-                    class="text-2xl font-bold text-green-400"
-                    id="normalDailyTarget"
-                  >
-                    $0
-                  </p>
-                  <p
-                    class="text-xs text-green-300 mt-1"
-                    id="normalDailyPercent"
-                  >
-                    0%
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Aggressive Mode Results -->
-            <div id="aggressiveResults" class="hidden space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="glass-light rounded-lg p-4 result-card">
-                  <p class="text-xs text-gray-400 mb-1">Best Day Profit</p>
-                  <p
-                    class="text-2xl font-bold text-green-400"
-                    id="bestDayProfit"
-                  >
-                    $0
-                  </p>
-                  <p class="text-xs text-green-300 mt-1" id="bestDayPercent">
-                    0%
-                  </p>
-                  <p
-                    class="text-xs text-gray-400 mt-1"
-                    id="bestDayProfitPercent"
-                  >
-                    0%
-                  </p>
-                </div>
-                <div class="glass-light rounded-lg p-4 result-card">
-                  <p class="text-xs text-gray-400 mb-1">Other Days (each)</p>
-                  <p
-                    class="text-2xl font-bold text-blue-400"
-                    id="otherDaysProfit"
-                  >
-                    $0
-                  </p>
-                  <p class="text-xs text-blue-300 mt-1" id="otherDaysPercent">
-                    0%
-                  </p>
-                  <p
-                    class="text-xs text-gray-400 mt-1"
-                    id="otherDaysProfitPercent"
-                  >
-                    0%
-                  </p>
-                </div>
-                <div class="glass-light rounded-lg p-4 result-card">
-                  <p class="text-xs text-gray-400 mb-1">Trading Days</p>
-                  <p
-                    class="text-2xl font-bold text-blue-400"
-                    id="aggressiveTradingDays"
-                  >
-                    0
-                  </p>
-                  <p
-                    class="text-xs text-blue-300 mt-1"
-                    id="aggressiveDaysPercent"
-                  >
-                    0%
-                  </p>
-                </div>
-                <div class="glass-light rounded-lg p-4 result-card">
-                  <p class="text-xs text-gray-400 mb-1">Days Saved</p>
-                  <p class="text-2xl font-bold text-blue-400" id="daysSaved">
-                    0
-                  </p>
-                  <p class="text-xs text-blue-300 mt-1" id="daysSavedPercent">
-                    0%
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pie Chart -->
-            <div class="glass-light rounded-lg p-6 mt-6">
+          <!-- Results -->
+          <div id="normalResults" class="">
+            <div class="grid grid-cols-2 gap-4 mb-4" id="resultsCards"></div>
+            <div class="glass-light rounded-lg p-6 my-6">
               <h3 class="text-lg font-semibold text-green-300 mb-4 text-center">
                 Trading Days Projection
               </h3>
@@ -506,8 +327,6 @@
                 <canvas id="projectionChart" width="300" height="300"></canvas>
               </div>
             </div>
-
-            <!-- Breakdown -->
             <div class="glass-light rounded-lg p-4 mt-6">
               <h3 class="text-sm font-semibold text-green-400 mb-3">
                 📊 Summary
@@ -524,10 +343,10 @@
             id="placeholder"
             class="flex flex-col items-center justify-center h-96 text-center"
           >
-            <div class="text-6xl mb-4 pulse">📊</div>
+            <div class="text-6xl mb-4 animate-pulse">📊</div>
             <p class="text-gray-400 text-lg">Configure your settings</p>
             <p class="text-gray-500 text-sm mt-2">
-              Adjust sliders and click Calculate
+              Adjust sliders and see instant results
             </p>
           </div>
         </div>
@@ -535,207 +354,184 @@
     </div>
 
     <script>
+      // UI/State
       let currentMode = "normal";
 
-      // Update slider values in real-time
-      document
-        .getElementById("payoutCycle")
-        .addEventListener("input", function (e) {
-          document.getElementById("payoutCycleValue").textContent =
-            e.target.value;
-        });
+      // Element references
+      const refs = {
+        accountSize: document.getElementById("accountSize"),
+        payoutAmount: document.getElementById("payoutAmount"),
+        consistencyPercent: document.getElementById("consistencyPercent"),
+        minTradingDays: document.getElementById("minTradingDays"),
+        minDaysValue: document.getElementById("minDaysValue"),
+        consistencyValue: document.getElementById("consistencyValue"),
+        warningBanner: document.getElementById("warningBanner"),
+        warningMessage: document.getElementById("warningMessage"),
+        resultsCards: document.getElementById("resultsCards"),
+        summaryContent: document.getElementById("summaryContent"),
+        placeholder: document.getElementById("placeholder"),
+        normalResults: document.getElementById("normalResults"),
+        projectionChart: document.getElementById("projectionChart"),
+        toggleSlider: document.getElementById("toggleSlider"),
+        normalLabel: document.getElementById("normalLabel"),
+        aggressiveLabel: document.getElementById("aggressiveLabel"),
+      };
 
-      document
-        .getElementById("consistencyPercent")
-        .addEventListener("input", function (e) {
-          document.getElementById("consistencyValue").textContent =
-            e.target.value;
-        });
+      // Attach real-time event listeners
+      [
+        refs.accountSize,
+        refs.payoutAmount,
+        refs.consistencyPercent,
+        refs.minTradingDays,
+      ].forEach((input) => input.addEventListener("input", updateAll));
 
-      document
-        .getElementById("minTradingDays")
-        .addEventListener("input", function (e) {
-          document.getElementById("minDaysValue").textContent = e.target.value;
-        });
+      refs.consistencyPercent.addEventListener(
+        "input",
+        (e) => (refs.consistencyValue.textContent = e.target.value)
+      );
+      refs.minTradingDays.addEventListener(
+        "input",
+        (e) => (refs.minDaysValue.textContent = e.target.value)
+      );
 
-      // Toggle mode
       function toggleMode() {
-        const toggle = document.getElementById("modeToggle");
-        const normalLabel = document.getElementById("normalLabel");
-        const aggressiveLabel = document.getElementById("aggressiveLabel");
-
         if (currentMode === "normal") {
           currentMode = "aggressive";
-          toggle.classList.add("aggressive");
-          normalLabel.classList.remove("active");
-          aggressiveLabel.classList.add("active");
+          refs.toggleSlider.classList.add("aggressive");
+          refs.normalLabel.classList.remove("active");
+          refs.aggressiveLabel.classList.add("active");
         } else {
           currentMode = "normal";
-          toggle.classList.remove("aggressive");
-          normalLabel.classList.add("active");
-          aggressiveLabel.classList.remove("active");
+          refs.toggleSlider.classList.remove("aggressive");
+          refs.normalLabel.classList.add("active");
+          refs.aggressiveLabel.classList.remove("active");
         }
+        updateAll();
       }
 
-      // Form submission
-      document
-        .getElementById("calculatorForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          calculateConsistency();
-        });
+      // Real-time calculation/update logic
+      function updateAll() {
+        // Get values
+        const accountSize = parseFloat(refs.accountSize.value);
+        const payoutAmount = parseFloat(refs.payoutAmount.value);
+        const consistencyPercent = parseInt(refs.consistencyPercent.value);
+        const minTradingDays = parseInt(refs.minTradingDays.value);
 
-      function calculateConsistency() {
-        // Get input values
-        const accountSize = parseFloat(
-          document.getElementById("accountSize").value
-        );
-        const payoutAmount = parseFloat(
-          document.getElementById("payoutAmount").value
-        );
-        const payoutCycle = parseInt(
-          document.getElementById("payoutCycle").value
-        );
-        const consistencyPercent = parseInt(
-          document.getElementById("consistencyPercent").value
-        );
-        const minTradingDays = parseInt(
-          document.getElementById("minTradingDays").value
-        );
-
-        // Validate basic inputs
-        if (isNaN(accountSize) || isNaN(payoutAmount)) {
-          alert("Please enter valid numbers");
+        // Basic validation
+        if (
+          isNaN(accountSize) ||
+          isNaN(payoutAmount) ||
+          isNaN(consistencyPercent) ||
+          isNaN(minTradingDays) ||
+          accountSize <= 0 ||
+          payoutAmount <= 0 ||
+          minTradingDays <= 0 ||
+          payoutAmount > accountSize * 10
+        ) {
+          refs.normalResults.style.display = "none";
+          refs.warningBanner.classList.add("hidden");
+          refs.placeholder.style.display = "";
           return;
         }
 
-        if (payoutAmount > accountSize) {
-          alert("Payout amount cannot exceed account size");
-          return;
-        }
+        refs.placeholder.style.display = "none";
 
-        // Hide placeholder
-        document.getElementById("placeholder").classList.add("hidden");
-
-        if (currentMode === "normal") {
-          showNormalResults(
+        if (currentMode === "normal")
+          return showNormalResults(
             accountSize,
             payoutAmount,
-            payoutCycle,
-            consistencyPercent
-          );
-        } else {
-          showAggressiveResults(
-            accountSize,
-            payoutAmount,
-            payoutCycle,
             consistencyPercent,
             minTradingDays
           );
-        }
+        else
+          return showAggressiveResults(
+            accountSize,
+            payoutAmount,
+            consistencyPercent,
+            minTradingDays
+          );
       }
 
       function showNormalResults(
         accountSize,
         payoutAmount,
-        payoutCycle,
-        consistencyPercent
+        consistencyPercent,
+        minTradingDays
       ) {
-        // Calculate
-        const dailyTarget = payoutAmount / payoutCycle;
+        const dailyTarget = payoutAmount / minTradingDays;
         const maxAllowed = payoutAmount * (consistencyPercent / 100);
         const dailyPercent = (dailyTarget / accountSize) * 100;
+        refs.warningBanner.classList.add("hidden");
 
-        // PRIORITY: Validate against consistency rule
+        // Consistency rule check
         if (dailyTarget > maxAllowed) {
-          // Calculate minimum days needed
           const minDaysNeeded = Math.ceil(payoutAmount / maxAllowed);
           const requiredConsistency = Math.ceil(
             (dailyTarget / payoutAmount) * 100
           );
-          const maxPayoutPossible = (maxAllowed * payoutCycle).toFixed(2);
+          const maxPayoutPossible = (maxAllowed * minTradingDays).toFixed(2);
 
-          document.getElementById("warningMessage").innerHTML = `
-                    <strong>Cannot achieve payout with current settings!</strong><br><br>
-                    <div class="space-y-2">
-                        <div>📊 <strong>Current Setup:</strong></div>
-                        <div class="ml-4">
-                            • Daily Target: <strong>$${dailyTarget.toFixed(
-                              2
-                            )}</strong> (${(
+          refs.warningMessage.innerHTML = `
+            <strong>Cannot achieve payout with current settings!</strong><br><br>
+            <div class="space-y-2">
+              <div>📊 <strong>Current Setup:</strong></div>
+              <div class="ml-4">
+                • Daily Target: <strong>$${dailyTarget.toFixed(2)}</strong> (${(
             (dailyTarget / payoutAmount) *
             100
           ).toFixed(1)}% of payout)<br>
-                            • Max Allowed: <strong>$${maxAllowed.toFixed(
-                              2
-                            )}</strong> (${consistencyPercent}% consistency rule)<br>
-                            • Payout Cycle: <strong>${payoutCycle} days</strong>
-                        </div>
-
-                        <div class="mt-3">🎯 <strong>Minimum Trading Days Needed: ${minDaysNeeded} days</strong></div>
-
-                        <div class="mt-3">✅ <strong>Choose One Solution:</strong></div>
-                        <div class="ml-4">
-                            1. Increase Payout Cycle to <strong>${minDaysNeeded}+ days</strong><br>
-                            2. Increase Consistency % to <strong>${requiredConsistency}%+</strong><br>
-                            3. Switch to <strong>AGGRESSIVE</strong> mode<br>
-                            4. Reduce Payout Amount to <strong>$${maxPayoutPossible}</strong> or less
-                        </div>
-                    </div>
-                `;
-
-          document.getElementById("warningBanner").classList.remove("hidden");
-          document.getElementById("resultsSection").classList.add("hidden");
+                • Max Allowed: <strong>$${maxAllowed.toFixed(
+                  2
+                )}</strong> (${consistencyPercent}% consistency rule)<br>
+                • Trading Days: <strong>${minTradingDays} days</strong>
+              </div>
+              <div class="mt-3">🎯 <strong>Minimum Trading Days Needed: ${minDaysNeeded} days</strong></div>
+              <div class="mt-3">✅ <strong>Choose One Solution:</strong></div>
+              <div class="ml-4">
+                1. Increase Trading Days to <strong>${minDaysNeeded}+ days</strong><br>
+                2. Increase Consistency % to <strong>${requiredConsistency}%+</strong><br>
+                3. Switch to <strong>AGGRESSIVE</strong> mode<br>
+                4. Reduce Payout Amount to <strong>$${maxPayoutPossible}</strong> or less
+              </div>
+            </div>
+          `;
+          refs.normalResults.style.display = "none";
+          refs.warningBanner.classList.remove("hidden");
           return;
         }
 
-        // Hide warning and show results
-        document.getElementById("warningBanner").classList.add("hidden");
-        document.getElementById("normalResults").classList.remove("hidden");
-        document.getElementById("aggressiveResults").classList.add("hidden");
-        document.getElementById("resultsSection").classList.remove("hidden");
-
-        // Update UI
-        document.getElementById("normalTradingDays").textContent = payoutCycle;
-        document.getElementById("normalDaysPercent").textContent =
-          "100% of cycle";
-        document.getElementById("normalDailyTarget").textContent =
-          "$" + dailyTarget.toFixed(2);
-        document.getElementById("normalDailyPercent").textContent =
-          dailyPercent.toFixed(3) + "% of account";
-
+        refs.warningBanner.classList.add("hidden");
+        refs.normalResults.style.display = "";
+        refs.resultsCards.innerHTML = `
+            <div class="glass-light rounded-lg p-4 result-card">
+              <p class="text-xs text-gray-400 mb-1">Trading Days</p>
+              <p class="text-2xl font-bold text-green-400">${minTradingDays}</p>
+              <p class="text-xs text-green-300 mt-1">100%</p>
+            </div>
+            <div class="glass-light rounded-lg p-4 result-card">
+              <p class="text-xs text-gray-400 mb-1">Daily Target</p>
+              <p class="text-2xl font-bold text-green-400">$${dailyTarget.toFixed(
+                2
+              )}</p>
+              <p class="text-xs text-green-300 mt-1">${dailyPercent.toFixed(
+                3
+              )}% of account</p>
+            </div>
+        `;
         // Summary
-        const summary = `
-                <div class="flex justify-between">
-                    <span>Mode:</span>
-                    <span class="font-semibold text-green-400">Normal (Relaxed)</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Total Days:</span>
-                    <span class="font-semibold">${payoutCycle} days</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Daily Target:</span>
-                    <span class="font-semibold">$${dailyTarget.toFixed(
-                      2
-                    )}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Consistency Check:</span>
-                    <span class="font-semibold text-green-400">✓ Pass (${consistencyPercent}%)</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Total Payout:</span>
-                    <span class="font-semibold text-green-400">$${payoutAmount.toFixed(
-                      2
-                    )}</span>
-                </div>
-            `;
-        document.getElementById("summaryContent").innerHTML = summary;
-
-        // Draw chart
+        refs.summaryContent.innerHTML = `
+            <div class="flex justify-between"><span>Mode:</span><span class="font-semibold text-green-400">Normal (Relaxed)</span></div>
+            <div class="flex justify-between"><span>Total Days:</span><span class="font-semibold">${minTradingDays} days</span></div>
+            <div class="flex justify-between"><span>Daily Target:</span><span class="font-semibold">$${dailyTarget.toFixed(
+              2
+            )}</span></div>
+            <div class="flex justify-between"><span>Consistency Check:</span><span class="font-semibold text-green-400">✓ Pass (${consistencyPercent}%)</span></div>
+            <div class="flex justify-between"><span>Total Payout:</span><span class="font-semibold text-green-400">$${payoutAmount.toFixed(
+              2
+            )}</span></div>
+        `;
         drawPieChart(
-          payoutCycle,
+          minTradingDays,
           dailyTarget,
           dailyTarget,
           accountSize,
@@ -746,129 +542,106 @@
       function showAggressiveResults(
         accountSize,
         payoutAmount,
-        payoutCycle,
         consistencyPercent,
         minTradingDays
       ) {
-        // Calculate max daily allowed based on consistency rule
         const maxAllowed = payoutAmount * (consistencyPercent / 100);
-
-        // PRIORITY: Validate against consistency rule
         const minDaysNeeded = Math.ceil(payoutAmount / maxAllowed);
 
         if (minTradingDays < minDaysNeeded) {
-          // Show warning
           const requiredConsistency = Math.ceil((1 / minTradingDays) * 100);
           const maxPayoutPossible = (maxAllowed * minTradingDays).toFixed(2);
 
-          document.getElementById("warningMessage").innerHTML = `
-                    <strong>Cannot achieve payout in ${minTradingDays} day(s)!</strong><br><br>
-                    <div class="space-y-2">
-                        <div>📊 <strong>Current Setup:</strong></div>
-                        <div class="ml-4">
-                            • Payout Target: <strong>$${payoutAmount.toFixed(
-                              2
-                            )}</strong><br>
-                            • Max per Day: <strong>$${maxAllowed.toFixed(
-                              2
-                            )}</strong> (${consistencyPercent}% rule)<br>
-                            • Min Trading Days: <strong>${minTradingDays} days</strong>
-                        </div>
-
-                        <div class="mt-3">🎯 <strong>Minimum Trading Days Needed: ${minDaysNeeded} days</strong></div>
-
-                        <div class="mt-3">✅ <strong>Choose One Solution:</strong></div>
-                        <div class="ml-4">
-                            1. Increase Min Trading Days to <strong>${minDaysNeeded}+ days</strong><br>
-                            2. Increase Consistency % to <strong>${requiredConsistency}%+</strong><br>
-                            3. Reduce Payout Amount to <strong>$${maxPayoutPossible}</strong> or less<br>
-                            4. Switch to <strong>NORMAL</strong> mode with longer cycle
-                        </div>
-                    </div>
-                `;
-
-          document.getElementById("warningBanner").classList.remove("hidden");
-          document.getElementById("resultsSection").classList.add("hidden");
+          refs.warningMessage.innerHTML = `
+            <strong>Cannot achieve payout in ${minTradingDays} day(s)!</strong><br><br>
+            <div class="space-y-2">
+              <div>📊 <strong>Current Setup:</strong></div>
+              <div class="ml-4">
+                • Payout Target: <strong>$${payoutAmount.toFixed(
+                  2
+                )}</strong><br>
+                • Max per Day: <strong>$${maxAllowed.toFixed(
+                  2
+                )}</strong> (${consistencyPercent}% rule)<br>
+                • Min Trading Days: <strong>${minTradingDays} days</strong>
+              </div>
+              <div class="mt-3">🎯 <strong>Minimum Trading Days Needed: ${minDaysNeeded} days</strong></div>
+              <div class="mt-3">✅ <strong>Choose One Solution:</strong></div>
+              <div class="ml-4">
+                1. Increase Min Trading Days to <strong>${minDaysNeeded}+ days</strong><br>
+                2. Increase Consistency % to <strong>${requiredConsistency}%+</strong><br>
+                3. Reduce Payout Amount to <strong>$${maxPayoutPossible}</strong> or less<br>
+                4. Switch to <strong>NORMAL</strong> mode
+              </div>
+            </div>
+          `;
+          refs.normalResults.style.display = "none";
+          refs.warningBanner.classList.remove("hidden");
           return;
         }
 
-        // Hide warning and show results
-        document.getElementById("warningBanner").classList.add("hidden");
-        document.getElementById("normalResults").classList.add("hidden");
-        document.getElementById("aggressiveResults").classList.remove("hidden");
-        document.getElementById("resultsSection").classList.remove("hidden");
-
+        refs.warningBanner.classList.add("hidden");
+        refs.normalResults.style.display = "";
         // Calculate distribution
         const bestDay = payoutAmount * (consistencyPercent / 100);
         const remainingProfit = payoutAmount - bestDay;
         const remainingDays = minTradingDays - 1;
         const otherDaysDaily =
           remainingDays > 0 ? remainingProfit / remainingDays : 0;
-
         const bestDayPercent = (bestDay / accountSize) * 100;
         const otherDaysPercent = (otherDaysDaily / accountSize) * 100;
-        const daysSaved = Math.max(0, payoutCycle - minTradingDays);
-        const daysSavedPercent =
-          payoutCycle > 0 ? (daysSaved / payoutCycle) * 100 : 0;
 
-        // Update UI
-        document.getElementById("bestDayProfit").textContent =
-          "$" + bestDay.toFixed(2);
-        document.getElementById("bestDayPercent").textContent =
-          bestDayPercent.toFixed(3) + "% of account";
-        document.getElementById("bestDayProfitPercent").textContent =
-          consistencyPercent + "% of profit";
-
-        document.getElementById("otherDaysProfit").textContent =
-          "$" + otherDaysDaily.toFixed(2);
-        document.getElementById("otherDaysPercent").textContent =
-          otherDaysPercent.toFixed(3) + "% of account";
-        document.getElementById("otherDaysProfitPercent").textContent =
-          100 - consistencyPercent + "% of profit";
-
-        document.getElementById("aggressiveTradingDays").textContent =
-          minTradingDays;
-        document.getElementById("aggressiveDaysPercent").textContent =
-          ((minTradingDays / payoutCycle) * 100).toFixed(1) + "% of cycle";
-
-        document.getElementById("daysSaved").textContent = daysSaved;
-        document.getElementById("daysSavedPercent").textContent =
-          daysSavedPercent.toFixed(1) + "% faster";
-
+        refs.resultsCards.innerHTML = `
+            <div class="glass-light rounded-lg p-4 result-card">
+              <p class="text-xs text-gray-400 mb-1">Best Day Profit</p>
+              <p class="text-2xl font-bold text-blue-400">$${bestDay.toFixed(
+                2
+              )}</p>
+              <p class="text-xs text-blue-300 mt-1">${bestDayPercent.toFixed(
+                3
+              )}% of account</p>
+              <p class="text-xs text-gray-400 mt-1">${consistencyPercent}% of profit</p>
+            </div>
+            <div class="glass-light rounded-lg p-4 result-card">
+              <p class="text-xs text-gray-400 mb-1">Other Days (each)</p>
+              <p class="text-2xl font-bold text-blue-400">$${otherDaysDaily.toFixed(
+                2
+              )}</p>
+              <p class="text-xs text-blue-300 mt-1">${otherDaysPercent.toFixed(
+                3
+              )}% of account</p>
+              <p class="text-xs text-gray-400 mt-1">${
+                100 - consistencyPercent
+              }% of profit</p>
+            </div>
+            <div class="glass-light rounded-lg p-4 result-card">
+              <p class="text-xs text-gray-400 mb-1">Trading Days</p>
+              <p class="text-2xl font-bold text-blue-400">${minTradingDays}</p>
+              <p class="text-xs text-blue-300 mt-1">100%</p>
+            </div>
+            <div class="glass-light rounded-lg p-4 result-card">
+              <p class="text-xs text-gray-400 mb-1">Aggressive Payout</p>
+              <p class="text-2xl font-bold text-blue-400">$${payoutAmount.toFixed(
+                2
+              )}</p>
+              <p class="text-xs text-blue-300 mt-1"> </p>
+            </div>
+        `;
         // Summary
-        const summary = `
-                <div class="flex justify-between">
-                    <span>Mode:</span>
-                    <span class="font-semibold text-blue-400">Aggressive (Fast)</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Best Day:</span>
-                    <span class="font-semibold">$${bestDay.toFixed(2)}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Other ${remainingDays} Days:</span>
-                    <span class="font-semibold">$${otherDaysDaily.toFixed(
-                      2
-                    )}/day</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Complete In:</span>
-                    <span class="font-semibold">${minTradingDays} days</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Consistency Check:</span>
-                    <span class="font-semibold text-green-400">✓ Pass (${consistencyPercent}%)</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Total Payout:</span>
-                    <span class="font-semibold text-green-400">$${payoutAmount.toFixed(
-                      2
-                    )}</span>
-                </div>
-            `;
-        document.getElementById("summaryContent").innerHTML = summary;
-
-        // Draw chart
+        refs.summaryContent.innerHTML = `
+            <div class="flex justify-between"><span>Mode:</span><span class="font-semibold text-blue-400">Aggressive (Fast)</span></div>
+            <div class="flex justify-between"><span>Best Day:</span><span class="font-semibold">$${bestDay.toFixed(
+              2
+            )}</span></div>
+            <div class="flex justify-between"><span>Other ${remainingDays} Days:</span><span class="font-semibold">$${otherDaysDaily.toFixed(
+          2
+        )}/day</span></div>
+            <div class="flex justify-between"><span>Complete In:</span><span class="font-semibold">${minTradingDays} days</span></div>
+            <div class="flex justify-between"><span>Consistency Check:</span><span class="font-semibold text-green-400">✓ Pass (${consistencyPercent}%)</span></div>
+            <div class="flex justify-between"><span>Total Payout:</span><span class="font-semibold text-green-400">$${payoutAmount.toFixed(
+              2
+            )}</span></div>
+        `;
         drawPieChart(
           minTradingDays,
           bestDay,
@@ -878,6 +651,7 @@
         );
       }
 
+      // Minimal canvas pie chart for visual
       function drawPieChart(
         totalDays,
         firstDayValue,
@@ -885,35 +659,26 @@
         accountSize,
         mode
       ) {
-        const canvas = document.getElementById("projectionChart");
-        const ctx = canvas.getContext("2d");
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const outerRadius = 130;
-        const innerRadius = 80;
-
-        // Clear canvas
+        const canvas = refs.projectionChart;
+        const ctx = canvas.getContext("2d"),
+          centerX = canvas.width / 2,
+          centerY = canvas.height / 2,
+          outerRadius = 130,
+          innerRadius = 80;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Colors
         const firstDayColor = mode === "NORMAL" ? "#20bf6b" : "#20bf6b";
         const otherColors = [
           "#3498db",
-          "#e74c3c",
-          "#f39c12",
+          "#e67e3c",
           "#9b59b6",
           "#1abc9c",
           "#34495e",
-          "#16a085",
           "#e67e22",
           "#2ecc71",
-          "#95a5a6",
         ];
-
-        // Draw segments
         const anglePerDay = (2 * Math.PI) / totalDays;
         let currentAngle = -0.5 * Math.PI;
-
         // First day
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
@@ -931,7 +696,6 @@
         ctx.lineWidth = 2;
         ctx.stroke();
         currentAngle += anglePerDay;
-
         // Other days
         for (let i = 1; i < totalDays; i++) {
           ctx.beginPath();
@@ -951,17 +715,15 @@
           ctx.stroke();
           currentAngle += anglePerDay;
         }
-
-        // Inner circle
+        // Inner Circle
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
-        ctx.fillStyle = "rgba(13, 17, 23, 0.95)";
+        ctx.fillStyle = "rgba(13,17,23,0.95)";
         ctx.fill();
         ctx.strokeStyle = "#30363d";
         ctx.lineWidth = 3;
         ctx.stroke();
-
-        // Center text
+        // Text
         ctx.fillStyle = "#20bf6b";
         ctx.font = "bold 18px Arial";
         ctx.textAlign = "center";
@@ -971,31 +733,16 @@
           centerX,
           centerY - 15
         );
-
         ctx.fillStyle = mode === "NORMAL" ? "#20bf6b" : "#3498db";
         ctx.font = "bold 20px Arial";
         ctx.fillText(mode, centerX, centerY + 15);
-
-        // Legend
-        const legendY = centerY + outerRadius + 30;
-        ctx.fillStyle = firstDayColor;
-        ctx.fillRect(centerX - 80, legendY, 15, 15);
-        ctx.fillStyle = "#e0e0e0";
-        ctx.font = "12px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText(
-          mode === "NORMAL" ? "Each Day" : "Best Day",
-          centerX - 60,
-          legendY + 12
-        );
-
-        if (mode === "AGGRESSIVE" && totalDays > 1) {
-          ctx.fillStyle = otherColors[0];
-          ctx.fillRect(centerX + 20, legendY, 15, 15);
-          ctx.fillStyle = "#e0e0e0";
-          ctx.fillText("Other Days", centerX + 40, legendY + 12);
-        }
       }
+
+      // Set initial state
+      refs.normalLabel.classList.add("active");
+
+      // Initial call
+      updateAll();
     </script>
   </body>
 </html>
