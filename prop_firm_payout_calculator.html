@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prop Firm Payout Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          #0a0a0a 0%,
+          #1a1a1a 50%,
+          #0a0a0a 100%
+        );
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
+          sans-serif;
+      }
+      .glass {
+        background: rgba(13, 17, 23, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(48, 54, 61, 0.5);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
+      .glass-light {
+        background: rgba(22, 27, 34, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(48, 54, 61, 0.3);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
+      }
+
+      /* Toggle Switch CSS */
+      .toggle-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .toggle {
+        position: relative;
+        width: 60px;
+        height: 32px;
+        background: rgba(48, 54, 61, 0.8);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(48, 54, 61, 0.5);
+      }
+
+      .toggle-slider {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: #6c757d;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .toggle.active {
+        background: rgba(32, 191, 107, 0.3);
+        border-color: rgba(32, 191, 107, 0.5);
+      }
+
+      .toggle.active .toggle-slider {
+        left: 30px;
+        background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
+        box-shadow: 0 2px 8px rgba(32, 191, 107, 0.4);
+      }
+
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: rgba(48, 54, 61, 0.5);
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #20bf6b;
+        cursor: pointer;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #20bf6b;
+        border: none;
+      }
+      input[type="range"]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      input[type="range"]:disabled::-webkit-slider-thumb {
+        background: #6c757d;
+        cursor: not-allowed;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(48, 54, 61, 0.8);
+      }
+      .custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #20bf6b rgba(48, 54, 61, 0.5);
+      }
+
+      .custom-scroll::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .custom-scroll::-webkit-scrollbar-track {
+        background: rgba(22, 27, 34, 0.6);
+        border-radius: 5px;
+      }
+
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #20bf6b 0%, #1a9957 100%);
+        border-radius: 5px;
+      }
+
+      .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #1a9957 0%, #158747 100%);
+      }
+
+      .result-card {
+        transition: all 0.3s ease;
+      }
+
+      .result-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(32, 191, 107, 0.2);
+      }
+
+      .formula-box {
+        background: rgba(32, 191, 107, 0.05);
+        border-left: 3px solid #20bf6b;
+        padding: 12px;
+        border-radius: 6px;
+        font-family: 'Courier New', monospace;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      .animate-pulse-slow {
+        animation: pulse 2s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body class="p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header class="glass rounded-xl p-6 mb-6">
+        <h1
+          class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500"
+        >
+          Prop Firm Payout Calculator
+        </h1>
+        <p class="text-gray-400 mt-2">
+          Calculate your prop firm payout with reward splits, withdrawal rules, and consistency checks
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Side: Input Form -->
+        <div class="glass rounded-xl p-6">
+          <h2 class="text-2xl font-bold text-green-400 mb-6">
+            Account Configuration
+          </h2>
+          <form
+            id="calculatorForm"
+            class="space-y-6"
+            autocomplete="off"
+            onsubmit="return false;"
+          >
+            <!-- Account Size -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Account Size ($)</label
+              >
+              <input
+                type="number"
+                id="accountSize"
+                required
+                step="5000"
+                value="25000"
+                min="5000"
+                class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 text-lg"
+              />
+            </div>
+
+            <!-- Desired Payout Percentage Slider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Desired Payout Percentage:
+                <span id="payoutPercentValue" class="text-green-400 font-bold"
+                  >5.00</span
+                >%</label
+              >
+              <input
+                type="range"
+                id="payoutPercent"
+                min="1"
+                max="100"
+                step="0.01"
+                value="5"
+                class="w-full"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>1%</span><span>100%</span>
+              </div>
+            </div>
+
+            <!-- 50% Withdrawal Rule Toggle -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-3"
+                >50% Withdrawal Rule</label
+              >
+              <div class="toggle-wrapper">
+                <div
+                  id="withdrawalToggle"
+                  class="toggle"
+                  onclick="toggleWithdrawal()"
+                >
+                  <div class="toggle-slider"></div>
+                </div>
+                <span id="withdrawalStatus" class="text-gray-400 text-sm"
+                  >Disabled</span
+                >
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                When enabled, your payout is reduced by 50%
+              </p>
+            </div>
+
+            <!-- Consistency Rule Toggle -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-3"
+                >Consistency Rule</label
+              >
+              <div class="toggle-wrapper">
+                <div
+                  id="consistencyToggle"
+                  class="toggle"
+                  onclick="toggleConsistency()"
+                >
+                  <div class="toggle-slider"></div>
+                </div>
+                <span id="consistencyStatus" class="text-gray-400 text-sm"
+                  >Disabled</span
+                >
+              </div>
+            </div>
+
+            <!-- Consistency Percentage Slider (Conditional) -->
+            <div id="consistencySliderContainer" style="display: none;">
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Consistency Percentage:
+                <span id="consistencyPercentValue" class="text-green-400 font-bold"
+                  >40</span
+                >%</label
+              >
+              <input
+                type="range"
+                id="consistencyPercent"
+                min="10"
+                max="65"
+                step="1"
+                value="40"
+                class="w-full"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>10%</span><span>65%</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                Maximum allowed profit on your best trading day
+              </p>
+            </div>
+
+            <!-- Reward Split Percentage Slider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Reward Split Percentage:
+                <span id="rewardSplitValue" class="text-green-400 font-bold"
+                  >80</span
+                >%</label
+              >
+              <input
+                type="range"
+                id="rewardSplit"
+                min="50"
+                max="100"
+                step="1"
+                value="80"
+                class="w-full"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>50%</span><span>100%</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                Your share of the total profit
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Side: Results & Breakdown -->
+        <div
+          class="glass rounded-xl p-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-scroll"
+        >
+          <h2 class="text-2xl font-bold text-green-400 mb-6">
+            Payout Breakdown
+          </h2>
+
+          <!-- Warning Banner -->
+          <div id="warningBanner" class="hidden mb-4">
+            <div class="glass-light rounded-lg p-4 border-l-4 border-yellow-500">
+              <div class="flex items-start gap-3">
+                <svg
+                  class="w-6 h-6 text-yellow-500 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  ></path>
+                </svg>
+                <div>
+                  <h3 class="text-yellow-400 font-semibold mb-2">
+                    ⚠️ Configuration Notice
+                  </h3>
+                  <div class="text-sm text-gray-300" id="warningMessage"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div id="results" class="hidden">
+            <!-- Main Result Cards -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="glass-light rounded-lg p-4 result-card">
+                <p class="text-xs text-gray-400 mb-1">💰 Payout Amount</p>
+                <p id="payoutAmount" class="text-2xl font-bold text-green-400">$0</p>
+                <p id="payoutPercent" class="text-xs text-green-300 mt-1">0% of profit</p>
+              </div>
+              <div class="glass-light rounded-lg p-4 result-card" id="bestDayCard" style="display: none;">
+                <p class="text-xs text-gray-400 mb-1">📈 Best Day Profit</p>
+                <p id="bestDayProfit" class="text-2xl font-bold text-blue-400">$0</p>
+                <p id="bestDayPercent" class="text-xs text-blue-300 mt-1">0% limit</p>
+              </div>
+            </div>
+
+            <!-- Calculation Breakdown -->
+            <div class="glass-light rounded-lg p-4 mb-4">
+              <h3 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Calculation Steps
+              </h3>
+              <div id="calculationSteps" class="space-y-2 text-sm text-gray-300"></div>
+            </div>
+
+            <!-- Summary -->
+            <div class="glass-light rounded-lg p-4">
+              <h3 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Summary
+              </h3>
+              <div id="summaryContent" class="space-y-2 text-sm text-gray-300"></div>
+            </div>
+          </div>
+
+          <!-- Placeholder -->
+          <div
+            id="placeholder"
+            class="flex flex-col items-center justify-center h-96 text-center"
+          >
+            <div class="text-6xl mb-4 animate-pulse-slow">💵</div>
+            <p class="text-gray-400 text-lg">Configure Your Account</p>
+            <p class="text-gray-500 text-sm mt-2">
+              Adjust settings to calculate your payout
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // State variables
+      let withdrawalEnabled = false;
+      let consistencyEnabled = false;
+
+      // Element references
+      const refs = {
+        accountSize: document.getElementById("accountSize"),
+        payoutPercent: document.getElementById("payoutPercent"),
+        payoutPercentValue: document.getElementById("payoutPercentValue"),
+        withdrawalToggle: document.getElementById("withdrawalToggle"),
+        withdrawalStatus: document.getElementById("withdrawalStatus"),
+        consistencyToggle: document.getElementById("consistencyToggle"),
+        consistencyStatus: document.getElementById("consistencyStatus"),
+        consistencyPercent: document.getElementById("consistencyPercent"),
+        consistencyPercentValue: document.getElementById("consistencyPercentValue"),
+        consistencySliderContainer: document.getElementById("consistencySliderContainer"),
+        rewardSplit: document.getElementById("rewardSplit"),
+        rewardSplitValue: document.getElementById("rewardSplitValue"),
+        warningBanner: document.getElementById("warningBanner"),
+        warningMessage: document.getElementById("warningMessage"),
+        results: document.getElementById("results"),
+        placeholder: document.getElementById("placeholder"),
+        payoutAmount: document.getElementById("payoutAmount"),
+        payoutPercent: document.getElementById("payoutPercent"),
+        bestDayCard: document.getElementById("bestDayCard"),
+        bestDayProfit: document.getElementById("bestDayProfit"),
+        bestDayPercent: document.getElementById("bestDayPercent"),
+        calculationSteps: document.getElementById("calculationSteps"),
+        summaryContent: document.getElementById("summaryContent"),
+      };
+
+      // Event listeners
+      refs.accountSize.addEventListener("input", updateCalculations);
+      refs.payoutPercent.addEventListener("input", (e) => {
+        refs.payoutPercentValue.textContent = parseFloat(e.target.value).toFixed(2);
+        updateCalculations();
+      });
+      refs.consistencyPercent.addEventListener("input", (e) => {
+        refs.consistencyPercentValue.textContent = e.target.value;
+        updateCalculations();
+      });
+      refs.rewardSplit.addEventListener("input", (e) => {
+        refs.rewardSplitValue.textContent = e.target.value;
+        updateCalculations();
+      });
+
+      function toggleWithdrawal() {
+        withdrawalEnabled = !withdrawalEnabled;
+        refs.withdrawalToggle.classList.toggle("active");
+        refs.withdrawalStatus.textContent = withdrawalEnabled ? "Enabled" : "Disabled";
+        refs.withdrawalStatus.className = withdrawalEnabled 
+          ? "text-green-400 text-sm font-semibold" 
+          : "text-gray-400 text-sm";
+        updateCalculations();
+      }
+
+      function toggleConsistency() {
+        consistencyEnabled = !consistencyEnabled;
+        refs.consistencyToggle.classList.toggle("active");
+        refs.consistencyStatus.textContent = consistencyEnabled ? "Enabled" : "Disabled";
+        refs.consistencyStatus.className = consistencyEnabled 
+          ? "text-green-400 text-sm font-semibold" 
+          : "text-gray-400 text-sm";
+        refs.consistencySliderContainer.style.display = consistencyEnabled ? "block" : "none";
+        updateCalculations();
+      }
+
+      function updateCalculations() {
+        // Get values
+        const accountSize = parseFloat(refs.accountSize.value);
+        const payoutPercent = parseFloat(refs.payoutPercent.value);
+        const consistencyPercent = parseInt(refs.consistencyPercent.value);
+        const rewardSplit = parseInt(refs.rewardSplit.value);
+
+        // Validation
+        if (isNaN(accountSize) || accountSize < 5000 || isNaN(payoutPercent) || payoutPercent <= 0) {
+          refs.results.classList.add("hidden");
+          refs.placeholder.style.display = "";
+          refs.warningBanner.classList.add("hidden");
+          return;
+        }
+
+        // Hide placeholder
+        refs.placeholder.style.display = "none";
+        refs.warningBanner.classList.add("hidden");
+
+        // Calculate target profit
+        const targetProfit = (accountSize * payoutPercent) / 100;
+        let calculatedPayout = targetProfit;
+        let steps = [];
+
+        // Step 1: Initial calculation
+        steps.push(`<div class="formula-box">
+          <div class="text-green-400 font-semibold mb-1">Step 1: Calculate Target Profit</div>
+          <div>Account Size × Payout % = Target Profit</div>
+          <div>$${accountSize.toLocaleString()} × ${payoutPercent}% = $${targetProfit.toFixed(2)}</div>
+        </div>`);
+
+        // Step 2: Apply 50% withdrawal if enabled
+        if (withdrawalEnabled) {
+          calculatedPayout = calculatedPayout / 2;
+          steps.push(`<div class="formula-box">
+            <div class="text-green-400 font-semibold mb-1">Step 2: Apply 50% Withdrawal Rule</div>
+            <div>Target Profit ÷ 2 = Adjusted Profit</div>
+            <div>$${targetProfit.toFixed(2)} ÷ 2 = $${calculatedPayout.toFixed(2)}</div>
+          </div>`);
+        }
+
+        // Step 3: Apply reward split
+        const beforeSplit = calculatedPayout;
+        calculatedPayout = (calculatedPayout * rewardSplit) / 100;
+        const stepNum = withdrawalEnabled ? 3 : 2;
+        steps.push(`<div class="formula-box">
+          <div class="text-green-400 font-semibold mb-1">Step ${stepNum}: Apply Reward Split</div>
+          <div>${withdrawalEnabled ? 'Adjusted' : 'Target'} Profit × ${rewardSplit}% = Final Payout</div>
+          <div>$${beforeSplit.toFixed(2)} × ${rewardSplit}% = $${calculatedPayout.toFixed(2)}</div>
+        </div>`);
+
+        // Calculate best day profit if consistency is enabled
+        let bestDayProfit = 0;
+        if (consistencyEnabled) {
+          bestDayProfit = (targetProfit * consistencyPercent) / 100;
+          const stepNum2 = withdrawalEnabled ? 4 : 3;
+          steps.push(`<div class="formula-box">
+            <div class="text-blue-400 font-semibold mb-1">Step ${stepNum2}: Calculate Best Day Limit</div>
+            <div>Target Profit × Consistency % = Max Day Profit</div>
+            <div>$${targetProfit.toFixed(2)} × ${consistencyPercent}% = $${bestDayProfit.toFixed(2)}</div>
+          </div>`);
+        }
+
+        // Check for warnings
+        if (consistencyEnabled && calculatedPayout > bestDayProfit) {
+          refs.warningMessage.innerHTML = `
+            <strong>Payout exceeds consistency rule limit!</strong><br><br>
+            <div class="space-y-2">
+              <div>📊 <strong>Current Situation:</strong></div>
+              <div class="ml-4">
+                • Your Payout: <strong>$${calculatedPayout.toFixed(2)}</strong><br>
+                • Best Day Limit: <strong>$${bestDayProfit.toFixed(2)}</strong> (${consistencyPercent}% rule)<br>
+                • Difference: <strong>$${(calculatedPayout - bestDayProfit).toFixed(2)}</strong> over limit
+              </div>
+              <div class="mt-3">💡 <strong>Recommendations:</strong></div>
+              <div class="ml-4">
+                1. Increase Consistency % to <strong>${Math.ceil((calculatedPayout / targetProfit) * 100)}%+</strong><br>
+                2. Enable 50% Withdrawal Rule to reduce payout<br>
+                3. Lower your Desired Payout % to <strong>${((bestDayProfit / accountSize) * 100).toFixed(2)}%</strong> or less<br>
+                4. Distribute profit across multiple trading days
+              </div>
+            </div>
+          `;
+          refs.warningBanner.classList.remove("hidden");
+        }
+
+        // Update results
+        refs.payoutAmount.textContent = `$${calculatedPayout.toFixed(2)}`;
+        refs.payoutPercent.textContent = `${rewardSplit}% of ${withdrawalEnabled ? 'adjusted ' : ''}profit`;
+
+        if (consistencyEnabled) {
+          refs.bestDayCard.style.display = "";
+          refs.bestDayProfit.textContent = `$${bestDayProfit.toFixed(2)}`;
+          refs.bestDayPercent.textContent = `${consistencyPercent}% limit`;
+        } else {
+          refs.bestDayCard.style.display = "none";
+        }
+
+        // Update calculation steps
+        refs.calculationSteps.innerHTML = steps.join("");
+
+        // Update summary
+        const accountPercent = ((calculatedPayout / accountSize) * 100).toFixed(3);
+        let summaryHTML = `
+          <div class="flex justify-between"><span>Account Size:</span><span class="font-semibold">$${accountSize.toLocaleString()}</span></div>
+          <div class="flex justify-between"><span>Target Profit:</span><span class="font-semibold">$${targetProfit.toFixed(2)} (${payoutPercent}%)</span></div>
+        `;
+        
+        if (withdrawalEnabled) {
+          summaryHTML += `<div class="flex justify-between"><span>50% Withdrawal:</span><span class="font-semibold text-yellow-400">✓ Applied</span></div>`;
+        }
+        
+        summaryHTML += `<div class="flex justify-between"><span>Reward Split:</span><span class="font-semibold">${rewardSplit}%</span></div>`;
+        
+        if (consistencyEnabled) {
+          summaryHTML += `<div class="flex justify-between"><span>Consistency Rule:</span><span class="font-semibold text-blue-400">✓ ${consistencyPercent}%</span></div>`;
+          summaryHTML += `<div class="flex justify-between"><span>Best Day Limit:</span><span class="font-semibold">$${bestDayProfit.toFixed(2)}</span></div>`;
+        }
+        
+        summaryHTML += `
+          <div class="border-t border-gray-700 mt-2 pt-2"></div>
+          <div class="flex justify-between"><span class="text-green-400 font-semibold">Final Payout:</span><span class="font-bold text-green-400">$${calculatedPayout.toFixed(2)}</span></div>
+          <div class="flex justify-between text-xs text-gray-400"><span>Payout % of Account:</span><span>${accountPercent}%</span></div>
+        `;
+
+        refs.summaryContent.innerHTML = summaryHTML;
+
+        // Show results
+        refs.results.classList.remove("hidden");
+      }
+
+      // Initial calculation
+      updateCalculations();
+    </script>
+  </body>
+</html>
