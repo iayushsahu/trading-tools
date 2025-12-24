@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NQ 10 AM PO3 Trading Checklist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body class="p-4 md:p-6">
+    <div class="max-w-[1600px] mx-auto">
+      <header class="glass rounded-xl p-6 mb-6">
+        <div>
+          <h1
+            class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500"
+          >
+            NQ 10 AM PO3 Trading Checklist
+          </h1>
+          <p class="text-gray-400 mt-2">
+            Track your PO3 setup criteria and progress
+          </p>
+        </div>
+      </header>
+
+      <div class="desktop-layout">
+        <!-- LEFT: CHECKLIST -->
+        <div class="left-column scrollbar-custom">
+          <div class="glass rounded-xl p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-green-400">Setup Checklist</h2>
+              <button
+                onclick="resetChecklist()"
+                class="btn-danger text-white px-4 py-2 rounded-lg text-sm font-semibold"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div class="space-y-6">
+              <div class="glass-light rounded-lg p-4">
+                <h3 class="text-l font-semibold text-green-300 mb-3">
+                  Preparation & Context
+                </h3>
+                <div class="space-y-3">
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="0"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >Bias Confirmed: Bullish or Bearish</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <div class="glass-light rounded-lg p-4">
+                <h3 class="text-l font-semibold text-green-300 mb-3">
+                  The PO3 Formation (Accumulation & Manipulation)
+                </h3>
+                <div class="space-y-3">
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="1"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >Accumulation: Has price moved sideways/consolidated since the 10:00 AM candle open?</span
+                    >
+                  </label>
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="2"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >Manipulation (The Wick): Has price moved opposite to your bias to create the 4-hour wick?</span
+                    >
+                  </label>
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="3"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >HTF Tapped: Did the manipulation tap into a 15M PD Array OR FVG?</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <div class="glass-light rounded-lg p-4">
+                <h3 class="text-l font-semibold text-green-300 mb-3">
+                  Entry Confirmation (Distribution)
+                </h3>
+                <div class="space-y-3">
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="4"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >Reversal Signal: candle reverse on the 1M TF?</span
+                    >
+                  </label>
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="5"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >Inverse FVG: A Most Recent FVG was disrespected by the candle</span
+                    >
+                  </label>
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="6"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >CISD: A candle body closed above/below the opening of the manipulation move</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <div class="glass-light rounded-lg p-4">
+                <h3 class="text-l font-semibold text-green-300 mb-3">
+                  Trade Management
+                </h3>
+                <div class="space-y-3">
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="7"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >SL Placed: Is the stop loss set at the bottom OR top of the manipulation wick?</span
+                    >
+                  </label>
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="8"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >TP Set: place 1:2 OR 1:3 OR 1:4</span
+                    >
+                  </label>
+                  <label class="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      class="checkbox-custom mt-1 regular-check"
+                      data-index="9"
+                      onchange="updateChecklist()"
+                    />
+                    <span
+                      class="text-gray-300 group-hover:text-green-400 transition-colors"
+                      >Break-Even Rule: Do the break-even once the "Accumulation High/Low" is broken?</span
+                    >
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: PROGRESS METER -->
+        <div class="right-column">
+          <div class="glass rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-6 text-center">
+              Progress Meter
+            </h2>
+            <div class="flex justify-center mb-6">
+              <canvas id="pieChart" width="280" height="280"></canvas>
+            </div>
+            <div class="text-center">
+              <span class="text-3xl font-bold text-green-400" id="progressText"
+                >0/10</span
+              >
+              <p class="text-gray-400 mt-2">items completed</p>
+            </div>
+
+            <!-- Progress Bars -->
+            <div class="mt-6 space-y-3">
+              <div>
+                <div class="flex justify-between text-sm text-gray-400 mb-1">
+                  <span>Completion</span>
+                  <span id="progressPercent">0%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                  <div id="progressBar" class="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="mt-6 text-center">
+              <div id="statusBadge" class="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-gray-700 text-gray-300">
+                Not Started
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+      <script src="index.js"></script>
+</body>
+</html>

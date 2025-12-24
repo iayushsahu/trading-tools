@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prop Firm Payout Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body class="p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header class="glass rounded-xl p-6 mb-6">
+        <h1
+          class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500"
+        >
+          Prop Firm Payout Calculator
+        </h1>
+        <p class="text-gray-400 mt-2">
+          Calculate your prop firm payout with reward splits, withdrawal rules, and consistency checks
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Side: Input Form -->
+        <div class="glass rounded-xl p-6">
+          <h2 class="text-2xl font-bold text-green-400 mb-6">
+            Account Configuration
+          </h2>
+          <form
+            id="calculatorForm"
+            class="space-y-6"
+            autocomplete="off"
+            onsubmit="return false;"
+          >
+            <!-- Account Size -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Account Size ($)</label
+              >
+              <input
+                type="number"
+                id="accountSize"
+                required
+                step="5000"
+                value="25000"
+                min="5000"
+                class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-green-500 text-lg"
+              />
+            </div>
+
+            <!-- Desired Payout Percentage Slider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Desired Payout Percentage:
+                <span id="payoutPercentValue" class="text-green-400 font-bold"
+                  >5.00</span
+                >%</label
+              >
+              <input
+                type="range"
+                id="payoutPercent"
+                min="1"
+                max="100"
+                step="0.01"
+                value="5"
+                class="w-full"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>1%</span><span>100%</span>
+              </div>
+            </div>
+
+            <!-- 50% Withdrawal Rule Toggle -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-3"
+                >50% Withdrawal Rule</label
+              >
+              <div class="toggle-wrapper">
+                <div
+                  id="withdrawalToggle"
+                  class="toggle"
+                  onclick="toggleWithdrawal()"
+                >
+                  <div class="toggle-slider"></div>
+                </div>
+                <span id="withdrawalStatus" class="text-gray-400 text-sm"
+                  >Disabled</span
+                >
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                When enabled, your payout is reduced by 50%
+              </p>
+            </div>
+
+            <!-- Consistency Rule Toggle -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-3"
+                >Consistency Rule</label
+              >
+              <div class="toggle-wrapper">
+                <div
+                  id="consistencyToggle"
+                  class="toggle"
+                  onclick="toggleConsistency()"
+                >
+                  <div class="toggle-slider"></div>
+                </div>
+                <span id="consistencyStatus" class="text-gray-400 text-sm"
+                  >Disabled</span
+                >
+              </div>
+            </div>
+
+            <!-- Consistency Percentage Slider (Conditional) -->
+            <div id="consistencySliderContainer" style="display: none;">
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Consistency Percentage:
+                <span id="consistencyPercentValue" class="text-green-400 font-bold"
+                  >40</span
+                >%</label
+              >
+              <input
+                type="range"
+                id="consistencyPercent"
+                min="10"
+                max="65"
+                step="1"
+                value="40"
+                class="w-full"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>10%</span><span>65%</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                Maximum allowed profit on your best trading day
+              </p>
+            </div>
+
+            <!-- Reward Split Percentage Slider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Reward Split Percentage:
+                <span id="rewardSplitValue" class="text-green-400 font-bold"
+                  >80</span
+                >%</label
+              >
+              <input
+                type="range"
+                id="rewardSplit"
+                min="50"
+                max="100"
+                step="1"
+                value="80"
+                class="w-full"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>50%</span><span>100%</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                Your share of the total profit
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Side: Results & Breakdown -->
+        <div
+          class="glass rounded-xl p-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-scroll"
+        >
+          <h2 class="text-2xl font-bold text-green-400 mb-6">
+            Payout Breakdown
+          </h2>
+
+          <!-- Warning Banner -->
+          <div id="warningBanner" class="hidden mb-4">
+            <div class="glass-light rounded-lg p-4 border-l-4 border-yellow-500">
+              <div class="flex items-start gap-3">
+                <svg
+                  class="w-6 h-6 text-yellow-500 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  ></path>
+                </svg>
+                <div>
+                  <h3 class="text-yellow-400 font-semibold mb-2">
+                    ⚠️ Configuration Notice
+                  </h3>
+                  <div class="text-sm text-gray-300" id="warningMessage"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div id="results" class="hidden">
+            <!-- Main Result Cards -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="glass-light rounded-lg p-4 result-card">
+                <p class="text-xs text-gray-400 mb-1">💰 Payout Amount</p>
+                <p id="payoutAmount" class="text-2xl font-bold text-green-400">$0</p>
+                <p id="payoutPercent" class="text-xs text-green-300 mt-1">0% of profit</p>
+              </div>
+              <div class="glass-light rounded-lg p-4 result-card" id="bestDayCard" style="display: none;">
+                <p class="text-xs text-gray-400 mb-1">📈 Best Day Profit</p>
+                <p id="bestDayProfit" class="text-2xl font-bold text-blue-400">$0</p>
+                <p id="bestDayPercent" class="text-xs text-blue-300 mt-1">0% limit</p>
+              </div>
+            </div>
+
+            <!-- Calculation Breakdown -->
+            <div class="glass-light rounded-lg p-4 mb-4">
+              <h3 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Calculation Steps
+              </h3>
+              <div id="calculationSteps" class="space-y-2 text-sm text-gray-300"></div>
+            </div>
+
+            <!-- Summary -->
+            <div class="glass-light rounded-lg p-4">
+              <h3 class="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Summary
+              </h3>
+              <div id="summaryContent" class="space-y-2 text-sm text-gray-300"></div>
+            </div>
+          </div>
+
+          <!-- Placeholder -->
+          <div
+            id="placeholder"
+            class="flex flex-col items-center justify-center h-96 text-center"
+          >
+            <div class="text-6xl mb-4 animate-pulse-slow">💵</div>
+            <p class="text-gray-400 text-lg">Configure Your Account</p>
+            <p class="text-gray-500 text-sm mt-2">
+              Adjust settings to calculate your payout
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+      <script src="index.js"></script>
+</body>
+</html>

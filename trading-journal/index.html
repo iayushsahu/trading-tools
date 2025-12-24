@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body class="p-4 md:p-6">
+    <div class="max-w-[1600px] mx-auto">
+      <header class="glass rounded-xl p-6 mb-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h1
+              class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500"
+            >
+              Trading Journal
+            </h1>
+            <p class="text-gray-400 mt-2">
+              Track and analyze your trading performance
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <button
+              onclick="downloadJournal()"
+              class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-semibold"
+            >
+              Download JSON
+            </button>
+            <button
+              onclick="resetJournal()"
+              class="btn-danger text-white px-4 py-2 rounded-lg text-sm font-semibold"
+            >
+              Reset All
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="desktop-layout">
+        <!-- LEFT: INPUT FORM -->
+        <div class="left-column">
+          <div class="glass rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-6">Add New Trade</h2>
+
+            <form
+              id="journalForm"
+              class="space-y-4"
+            >
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2"
+                  >Date</label
+                >
+                <input
+                  type="date"
+                  id="tradeDate"
+                  required
+                  class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2"
+                  >Symbol</label
+                >
+                <input
+                  type="text"
+                  id="symbol"
+                  required
+                  placeholder="e.g., NQ, ES, XAU/USD"
+                  class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2"
+                    >Direction</label
+                  >
+                  <select
+                    id="direction"
+                    required
+                    class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                  >
+                    <option value="Long">Long ↑</option>
+                    <option value="Short">Short ↓</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2"
+                    >Quantity</label
+                  >
+                  <input
+                    type="number"
+                    id="qty"
+                    required
+                    step="0.01"
+                    placeholder="1.0"
+                    class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2"
+                    >Entry</label
+                  >
+                  <input
+                    type="number"
+                    id="entry"
+                    required
+                    step="0.0000001"
+                    placeholder="0.00"
+                    class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2"
+                    >Stop Loss</label
+                  >
+                  <input
+                    type="number"
+                    id="stoploss"
+                    required
+                    step="0.0000001"
+                    placeholder="0.00"
+                    class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2"
+                    >Target</label
+                  >
+                  <input
+                    type="number"
+                    id="target"
+                    required
+                    step="0.0000001"
+                    placeholder="0.00"
+                    class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-300 mb-2"
+                    >Exit</label
+                  >
+                  <input
+                    type="number"
+                    id="exit"
+                    required
+                    step="0.0000001"
+                    placeholder="0.00"
+                    class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2"
+                  >Profit/Loss</label
+                >
+                <select
+                  id="profitLoss"
+                  required
+                  class="w-full bg-black bg-opacity-50 border border-gray-700 rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-green-500 transition-colors"
+                >
+                  <option value="Profit">Profit</option>
+                  <option value="Loss">Loss</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                class="w-full btn-primary text-white py-3 rounded-lg font-semibold text-lg"
+              >
+                Add Trade
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT: TRADES LIST -->
+        <div class="right-column scrollbar-custom">
+          <div class="glass rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-6">Trade History</h2>
+            <div id="tradesList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+      <script src="index.js"></script>
+</body>
+</html>
